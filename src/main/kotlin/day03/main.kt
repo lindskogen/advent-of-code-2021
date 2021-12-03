@@ -21,29 +21,23 @@ fun main(args: Array<String>) {
 }
 
 private fun solve(lines: List<String>): Int {
-    val result = arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-    val invertedResult = arrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    var result = ""
+    var invertedResult = ""
 
     for (i in 0..11) {
-        var numOnes = 0
-        var numZeros = 0
-        for (l in lines) {
-            if (l[i] == '1') {
-                numOnes += 1
-            } else {
-                numZeros += 1
-            }
-        }
+        val numOnes = lines.count { it[i] == '1' }
+        val numZeros = lines.size - numOnes
+
         if (numZeros > numOnes) {
-            result[i] = 0
-            invertedResult[i] = 1
+            result  += "0"
+            invertedResult += "1"
         } else {
-            result[i] = 1
-            invertedResult[i] = 0
+            result +=  "1"
+            invertedResult += "0"
         }
     }
-    val binaryNum = Integer.parseInt(result.joinToString(separator = ""), 2)
-    val invertedNum = Integer.parseInt(invertedResult.joinToString(separator = ""), 2)
+    val binaryNum = Integer.parseInt(result, 2)
+    val invertedNum = Integer.parseInt(invertedResult, 2)
 
     return binaryNum * invertedNum
 }
@@ -61,15 +55,9 @@ private fun findMostCommon(lines: List<String>, keepOnes: (numOnes: Int, numZero
     val linesSet = lines.toMutableSet()
 
     for (i in 0 until numBits) {
-        var numOnes = 0
-        var numZeros = 0
-        for (l in linesSet) {
-            if (l[i] == '1') {
-                numOnes += 1
-            } else {
-                numZeros += 1
-            }
-        }
+        val numOnes = linesSet.count { it[i] == '1' }
+        val numZeros = linesSet.size - numOnes
+
         if (keepOnes(numOnes, numZeros)) {
             linesSet.removeIf { it[i] == '0' }
         } else {
