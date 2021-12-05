@@ -1,11 +1,10 @@
 package day05
 
 import java.io.File
-import kotlin.math.abs
 import kotlin.test.assertEquals
 import kotlin.time.measureTimedValue
 
-fun parseRect(input: String): Pair<Pair<Int,Int>, Pair<Int, Int>> {
+fun parseRect(input: String): Pair<Pair<Int, Int>, Pair<Int, Int>> {
     val lists = input.split(" -> ").map { it.split(",").map(Integer::parseInt) }
 
     return Pair(Pair(lists[0][0], lists[0][1]), Pair(lists[1][0], lists[1][1]))
@@ -26,48 +25,27 @@ fun main(args: Array<String>) {
     println(elapsed)
 }
 
-private fun solve(rects: List<Pair<Pair<Int,Int>, Pair<Int, Int>>>, countDiagonals: Boolean): Int {
-    val map = mutableMapOf<Pair<Int, Int>, Int>()
+private fun solve(rects: List<Pair<Pair<Int, Int>, Pair<Int, Int>>>, countDiagonals: Boolean): Int {
 
-    for ((from, to) in rects) {
-        val (x1, x2) = sortFromTo(from.first, to.first)
-        val (y1, y2) = sortFromTo(from.second, to.second)
-        if (x1 == x2 || y1 == y2) {
-            for (x in x1..x2) {
-                for (y in y1..y2) {
-                    map.compute(Pair(x, y)) { _, v -> (v ?: 0) + 1 }
-                }
-            }
+    return rects.flatMap { (from, to) ->
+        val (x1, y1) = from
+        val (x2, y2) = to
+
+        if (x1 == x2) {
+            val (start, end) = listOf(y1, y2).sorted()
+            (start..end).map { y -> x1 to y }
+        } else if (y1 == y2) {
+            val (start, end) = listOf(x1, x2).sorted()
+            (start..end).map { x -> x to y1 }
         } else if (countDiagonals) {
-            val xDir = if (from.first < to.first) { 1 } else { -1 }
-            val yDir = if (from.second < to.second) { 1 } else { -1 }
+            val dx = if (x1 < x2) 1 else -1
+            val dy = if (y1 < y2) 1 else -1
 
-
-            for (n in 0 .. abs(from.first - to.first)) {
-                val x = from.first + (xDir*n)
-                val y = from.second + (yDir*n)
-
-                map.compute(Pair(x, y)) { _, v -> (v ?: 0) + 1 }
+            (0..dx * (x2 - x1)).map { t ->
+                (x1 + dx * t) to (y1 + dy * t)
             }
-
+        } else {
+            listOf()
         }
-    }
-
-    return map.count { (k, v) -> v > 1 }
-}
-
-private fun sortFromTo(from: Int, to: Int) =
-    if (from > to) {
-        Pair(to, from)
-    } else {
-         Pair(from, to)
-    }
-
-fun printMap(map: Map<Pair<Int, Int>, Int>, from: Int, to: Int) {
-    for (x in from..to) {
-        for (y in from..to) {
-            print(map[Pair(y, x)] ?: '.')
-        }
-        println()
-    }
+    }.groupingBy { it }.eachCount().count { it.value > 1 }
 }
