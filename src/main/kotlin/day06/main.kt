@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
 
 private fun solve(nums: List<Int>, iterations: Int): Long {
     val fishes = (0..8).map { i -> nums.count { it == i }.toLong() }.toMutableList()
-    (0 until iterations).forEach { day ->
+    repeat(iterations) { _ ->
         val fishesToAdd = fishes[0]
 
         for (i in 0..7) {
