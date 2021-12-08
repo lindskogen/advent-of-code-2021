@@ -33,38 +33,48 @@ fun solve2(pairs: List<Pair<List<String>, List<String>>>): Int =
     pairs.sumOf { (inputs, outputs) ->
         val iset = inputs.toMutableSet()
         val nbrMap = mutableMapOf<String, Int>()
-        val one = findAndRemoveFromSet(iset) { it.length == 2 }
-        nbrMap[one] = 1
 
-        val seven = findAndRemoveFromSet(iset) { it.length == 3 }
-        nbrMap[seven] = 7
+        val one = findAndRemoveFromSet(iset) { it.length == 2 }.also {
+            nbrMap[it] = 1
+        }
 
-        val four = findAndRemoveFromSet(iset) { it.length == 4 }
-        nbrMap[four] = 4
+        val seven = findAndRemoveFromSet(iset) { it.length == 3 }.also {
+            nbrMap[it] = 7
+        }
 
-        val eight = findAndRemoveFromSet(iset) { it.length == 7 }
-        nbrMap[eight] = 8
+        val four = findAndRemoveFromSet(iset) { it.length == 4 }.also {
+            nbrMap[it] = 4
+        }
 
-        val three = findAndRemoveFromSet(iset) { it.toSet().containsAll(one.toSet()) && it.length == 5 }
-        nbrMap[three] = 3
+        val eight = findAndRemoveFromSet(iset) { it.length == 7 }.also {
+            nbrMap[it] = 8
+        }
 
-        val nine = findAndRemoveFromSet(iset) { it.length == 6 && it.toSet().containsAll(four.toSet()) }
-        nbrMap[nine] = 9
+        val three = findAndRemoveFromSet(iset) { it.toSet().containsAll(one.toSet()) && it.length == 5 }.also {
+            nbrMap[it] = 3
+        }
 
-        val zero = findAndRemoveFromSet(iset) { it.length == 6 && it.toSet().containsAll(seven.toSet()) }
-        nbrMap[zero] = 0
+        val nine = findAndRemoveFromSet(iset) { it.length == 6 && it.toSet().containsAll(four.toSet()) }.also {
+            nbrMap[it] = 9
+        }
 
-        val six = findAndRemoveFromSet(iset) { it.length == 6 }
-        nbrMap[six] = 6
+        val zero = findAndRemoveFromSet(iset) { it.length == 6 && it.toSet().containsAll(seven.toSet()) }.also {
+            nbrMap[it] = 0
+        }
 
+        val six = findAndRemoveFromSet(iset) { it.length == 6 }.also {
+            nbrMap[it] = 6
+        }
 
         val nineMissingSegment = eight.toSet().minus(nine.toSet()).single()
 
-        val two = findAndRemoveFromSet(iset) { it.contains(nineMissingSegment) }
-        nbrMap[two] = 2
+        val two = findAndRemoveFromSet(iset) { it.contains(nineMissingSegment) }.also {
+            nbrMap[it] = 2
+        }
 
-        val five = iset.single()
-        nbrMap[five] = 5
+        val five = iset.single().also {
+            nbrMap[it] = 5
+        }
 
         outputs.joinToString(separator = "") { nbrMap[it].toString() }.toInt()
     }
@@ -72,11 +82,9 @@ fun solve2(pairs: List<Pair<List<String>, List<String>>>): Int =
 private fun findAndRemoveFromSet(
     iset: MutableSet<String>,
     predicate: (String) -> Boolean
-): String {
-    val one = iset.find(predicate)!!
-    iset.remove(one)
-    return one
-}
+): String =
+    iset.find(predicate)!!.also { iset.remove(it) }
+
 
 
 
