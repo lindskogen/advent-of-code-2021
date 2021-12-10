@@ -1,6 +1,5 @@
 package day10
 
-import util.*
 import java.io.File
 import java.lang.UnsupportedOperationException
 import kotlin.test.assertEquals
@@ -24,47 +23,47 @@ fun main(args: Array<String>) {
 private fun solve(lines: List<String>): Int =
     lines.sumOf { l ->
         val stack = ArrayDeque<Char>()
-        for (c in l.toCharArray()) {
-            when (c) {
-                '[', '(', '{', '<' -> stack.addFirst(c)
-                ']', ')', '}', '>' -> {
-                    if (stack.first() == matchingParens(c)) {
-                        stack.removeFirst()
-                    } else {
-                        return@sumOf parensPoints(c)
-                    }
-                }
-            }
-        }
+        val errorChar = syntaxCheckLine(l, stack)
 
-        return@sumOf 0
+        errorChar?.let { parensPoints(it)  } ?: 0
     }
 
 private fun solve2(lines: List<String>): Long {
     val sortedLines = lines.flatMap { l ->
         val stack = ArrayDeque<Char>()
-        for (c in l.toCharArray()) {
-            when (c) {
-                '[', '(', '{', '<' -> stack.addFirst(c)
-                ']', ')', '}', '>' -> {
-                    if (stack.first() == matchingParens(c)) {
-                        stack.removeFirst()
-                    } else {
-                        return@flatMap emptyList()
-                    }
-                }
-            }
-        }
 
-        listOf(stack.fold(0L) { acc, it ->
-            acc * 5 + autocompletePoints(matchingParens(it))
-        })
+        val errorChar = syntaxCheckLine(l, stack)
+
+        if (errorChar == null) {
+            listOf(calculateAutocompleteScore(stack))
+        } else {
+            emptyList()
+        }
     }.sorted()
 
     return sortedLines.let { it[it.size / 2] }
 }
 
-fun matchingParens(c: Char) = when (c) {
+private fun syntaxCheckLine(l: String, stack: ArrayDeque<Char>): Char? {
+    for (c in l) {
+        when (c) {
+            '[', '(', '{', '<' -> stack.addFirst(c)
+            ']', ')', '}', '>' -> {
+                if (stack.first() == matchingParens(c)) {
+                    stack.removeFirst()
+                } else {
+                    return c
+                }
+            }
+        }
+    }
+    return null
+}
+
+private fun calculateAutocompleteScore(stack: ArrayDeque<Char>) =
+    stack.fold(0L) { acc, it -> acc * 5 + autocompletePoints(matchingParens(it)) }
+
+private fun matchingParens(c: Char) = when (c) {
     '[' -> ']'
     '(' -> ')'
     '{' -> '}'
@@ -76,7 +75,7 @@ fun matchingParens(c: Char) = when (c) {
     else -> throw UnsupportedOperationException("No support for $c")
 }
 
-fun parensPoints(c: Char) = when (c) {
+private fun parensPoints(c: Char) = when (c) {
     ']' -> 57
     ')' -> 3
     '}' -> 1197
@@ -84,7 +83,7 @@ fun parensPoints(c: Char) = when (c) {
     else -> throw UnsupportedOperationException("No support for $c")
 }
 
-fun autocompletePoints(c: Char) = when (c) {
+private fun autocompletePoints(c: Char) = when (c) {
     ')' -> 1
     ']' -> 2
     '}' -> 3
