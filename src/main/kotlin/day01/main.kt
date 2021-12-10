@@ -1,15 +1,15 @@
 package day01
 
 import java.io.File
-import java.util.*
+import kotlin.test.assertEquals
 import kotlin.time.measureTimedValue
 
 @kotlin.time.ExperimentalTime
 fun main(args: Array<String>) {
     val (value, elapsed) = measureTimedValue {
         val nums = File("src/main/kotlin/day01/input").readLines().map(Integer::parseInt)
-        solve(nums)
-        solve2(nums)
+        assertEquals(1581, solve(nums))
+        assertEquals(1618, solve2(nums))
     }
     println(elapsed)
 }
@@ -33,16 +33,11 @@ private fun solve(nums: List<Int>): Int {
 
 private fun solve2(nums: List<Int>): Int {
     val numbers = mutableMapOf<Int, Int>()
-    var count = 0
 
-    for (i in 0..nums.size-3) {
-        val currSum = nums[i] + nums[i + 1] + nums[i + 2]
+    return nums.windowed(3).withIndex().count { (i, it) ->
+        val currSum = it.sum()
         numbers[i] = currSum
-        if (i > 0 && currSum > numbers[i-1]!!) {
-            count++
-        }
-    }
 
-    println(count)
-    return count
+        i > 0 && currSum > numbers[i-1]!!
+    }
 }
