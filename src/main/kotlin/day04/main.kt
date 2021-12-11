@@ -1,14 +1,13 @@
 package day04
 
 import java.io.File
-import java.util.regex.Pattern
 import kotlin.test.assertEquals
 import kotlin.time.measureTimedValue
 
 typealias Board = List<List<Int>>
 
 private fun parseBoard(input: String): Board {
-    val regex = Pattern.compile("\\s+")
+    val regex = "\\s+".toRegex()
     return input.lines().map {
         it.split(regex).filterNot(String::isEmpty).map(Integer::parseInt)
     }
@@ -60,7 +59,7 @@ private fun solve(numbers: List<Int>, boards: List<Board>): Pair<Int, Int> {
         throw IllegalStateException("No bingo for these numbers & boards")
     }
 
-    return Pair(firstBoardScore, lastBoardScore)
+    return firstBoardScore to lastBoardScore
 }
 
 fun checkIfBoardHasBingo(calledNumbers: Set<Int>, board: Board): Boolean {

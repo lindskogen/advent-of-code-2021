@@ -21,8 +21,8 @@ enum class Direction {
 class Command(val dir: Direction, val num: Int) {
     companion object {
         fun parse(input: String): Command {
-            val splits = input.split(" ")
-            return Command(Direction.parse(splits[0]), parseInt(splits[1]))
+            val (dir, value) = input.split(" ")
+            return Command(Direction.parse(dir), parseInt(value))
         }
     }
 }

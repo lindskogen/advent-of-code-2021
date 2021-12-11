@@ -7,7 +7,7 @@ import kotlin.time.measureTimedValue
 @kotlin.time.ExperimentalTime
 fun main(args: Array<String>) {
     val (value, elapsed) = measureTimedValue {
-        val nums = File("src/main/kotlin/day06/input").readLines()[0].split(",").map(Integer::parseInt)
+        val nums = File("src/main/kotlin/day06/input").readLines().single().split(",").map(Integer::parseInt)
         val r1 = solve(nums, 80)
         assertEquals(395627, r1)
          val r2 = solve(nums, 256)

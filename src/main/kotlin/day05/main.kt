@@ -1,13 +1,14 @@
 package day05
 
+import util.toPair
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.time.measureTimedValue
 
 fun parseRect(input: String): Pair<Pair<Int, Int>, Pair<Int, Int>> {
-    val lists = input.split(" -> ").map { it.split(",").map(Integer::parseInt) }
+    val (p1, p2) = input.split(" -> ").map { it.split(",").map(Integer::parseInt) }
 
-    return Pair(Pair(lists[0][0], lists[0][1]), Pair(lists[1][0], lists[1][1]))
+    return (p1.toPair()) to (p2.toPair())
 }
 
 @kotlin.time.ExperimentalTime
